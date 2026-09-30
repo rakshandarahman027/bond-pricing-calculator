@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bond Pricing Calculator</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; background: #0d1117; color: #e6edf3; }
+  h1 { font-size: 22px; }
+  label { display: block; margin-top: 14px; font-size: 14px; }
+  input, select { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; background: #161b22; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; }
+  button { margin-top: 20px; padding: 10px 20px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; }
+  button:hover { background: #2ea043; }
+  #result { margin-top: 20px; font-size: 18px; font-weight: bold; }
+  #breakdown { margin-top: 8px; font-size: 13px; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<h1>Bond Pricing Calculator</h1>
+<p style="color:#8b949e; font-size:14px;">Based on the bond pricing formula: P = C × [1 - 1/(1+r)^n] / r + M/(1+r)^n</p>
+
+<label>Par (face) value ($)</label>
+<input type="number" id="par" value="1000">
+
+<label>Annual coupon rate (%)</label>
+<input type="number" id="couponRate" value="10">
+
+<label>Years to maturity</label>
+<input type="number" id="years" value="20">
+
+<label>Required annual yield (%)</label>
+<input type="number" id="yieldRate" value="11">
+
+<label>Coupon frequency</label>
+<select id="frequency">
+  <option value="2">Semiannual</option>
+  <option value="1">Annual</option>
+</select>
+
+<button onclick="calculatePrice()">Calculate Price</button>
+
+<div id="result"></div>
+<div id="breakdown"></div>
+
+<script>
+function calculatePrice() {
+  const par = parseFloat(document.getElementById('par').value);
+  const couponRate = parseFloat(document.getElementById('couponRate').value) / 100;
+  const years = parseFloat(document.getElementById('years').value);
+  const yieldRate = parseFloat(document.getElementById('yieldRate').value) / 100;
+  const freq = parseInt(document.getElementById('frequency').value);
+
+  const C = (couponRate * par) / freq;
+  const r = yieldRate / freq;
+  const n = years * freq;
+
+  const pvCoupons = C * (1 - Math.pow(1 + r, -n)) / r;
+  const pvPar = par / Math.pow(1 + r, n);
+  const price = pvCoupons + pvPar;
+
+  document.getElementById('result').innerText = 'Bond Price: $' + price.toFixed(2);
+  document.getElementById('breakdown').innerText =
+    'PV of coupons: $' + pvCoupons.toFixed(2) + ' + PV of par: $' + pvPar.toFixed(2);
+}
+
+calculatePrice();
+</script>
+
+</body>
+</html>
